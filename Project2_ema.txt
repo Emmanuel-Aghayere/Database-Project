@@ -1,0 +1,990 @@
+SQL> --Emmanuel Aghayere
+SQL> --INSY 3304-002
+SQL> --Project 2
+SQL> 
+SQL> DROP TABLE APPTDETAIL_ema;
+
+Table dropped.
+
+SQL> DROP TABLE APPOINTMENT_ema;
+
+Table dropped.
+
+SQL> DROP TABLE BLOCK_ema;
+
+Table dropped.
+
+SQL> DROP TABLE APPTREASON_ema;
+
+Table dropped.
+
+SQL> DROP TABLE APPTSTATUS_ema;
+
+Table dropped.
+
+SQL> DROP TABLE PMTSTATUS_ema;
+
+Table dropped.
+
+SQL> DROP TABLE DOCTOR_ema;
+
+Table dropped.
+
+SQL> DROP TABLE INSURANCECO_ema;
+
+Table dropped.
+
+SQL> DROP TABLE BILLINGTYPE_ema;
+
+Table dropped.
+
+SQL> DROP TABLE PATIENT_ema;
+
+Table dropped.
+
+SQL> --Part 1A
+SQL> 
+SQL> CREATE TABLE PATIENT_ema (
+  2  	     PatientID	     NUMBER(4),
+  3  	     PatientFName    VARCHAR(15)     NOT NULL,
+  4  	     PatientLName    VARCHAR(15)     NOT NULL,
+  5  	     PatientPhone    CHAR(13),
+  6  	     PRIMARY KEY(PatientID)
+  7  	     ) ;
+
+Table created.
+
+SQL> CREATE TABLE BILLINGTYPE_ema (
+  2  	     BillingType VARCHAR(2),
+  3  	     BillingTypeDesc VARCHAR(20) NOT NULL,
+  4  	     PRIMARY KEY(BillingType)
+  5  	     );
+
+Table created.
+
+SQL> CREATE TABLE INSURANCECO_ema (
+  2  	     InsCoID NUMBER(4),
+  3  	     InsCoName	     VARCHAR(20),
+  4  	     PRIMARY KEY(InsCoID)
+  5  	     );
+
+Table created.
+
+SQL> CREATE TABLE DOCTOR_ema (
+  2  	     DrID NUMBER(2),
+  3  	     DrFName VARCHAR(20) NOT NULL,
+  4  	     DrLName VARCHAR(20) NOT NULL,
+  5  	     PRIMARY KEY(DrID)
+  6  	     );
+
+Table created.
+
+SQL> CREATE TABLE PMTSTATUS_ema (
+  2  	     PmtStatusCode CHAR(2),
+  3  	     PmtStatusDesc   VARCHAR(13) NOT NULL,
+  4  	     PRIMARY KEY(PmtStatusCode)
+  5  	     );
+
+Table created.
+
+SQL> CREATE TABLE APPTSTATUS_ema (
+  2  	     ApptStatusCode VARCHAR(2),
+  3  	     ApptStatusDesc  VARCHAR(13) NOT NULL,
+  4  	     PRIMARY KEY(ApptStatusCode)
+  5  	     );
+
+Table created.
+
+SQL> CREATE TABLE APPTREASON_ema (
+  2  	     ApptReasonCode CHAR(3) ,
+  3  	     ApptReasonDesc  VARCHAR(22) NOT NULL,
+  4  	     PRIMARY KEY(ApptReasonCode)
+  5  	     );
+
+Table created.
+
+SQL> CREATE TABLE BLOCK_ema (
+  2  	     BlockCode VARCHAR(2),
+  3  	     BlockCodeDesc VARCHAR(7) NOT NULL,
+  4  	     BlockCodeMinutes	     NUMBER(2) NULL,
+  5  	     PRIMARY KEY(BlockCode)
+  6  	     );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE APPOINTMENT_ema (
+  2  	     ApptID NUMBER(3),
+  3  	     ApptDate Date		     NOT NULL,
+  4  	     ApptTime CHAR(9)		     NOT NULL,
+  5  	     PatientID NUMBER(4)     NOT NULL,
+  6  	     BillingType VARCHAR(2)  NOT NULL,
+  7  	     InsCoID NUMBER(4)		     NULL,
+  8  	     DrID NUMBER(2)		     NOT NULL,
+  9  	     ApptStatusCode VARCHAR(20) NOT NULL,
+ 10  	     PmtStatusCode CHAR(2) NOT NULL,
+ 11  	     PRIMARY KEY (ApptID),
+ 12  	     FOREIGN KEY (PatientID) REFERENCES PATIENT_ema,
+ 13  	     FOREIGN KEY (BillingType) REFERENCES BILLINGTYPE_ema,
+ 14  	     FOREIGN KEY (InsCoID) REFERENCES INSURANCECO_ema,
+ 15  	     FOREIGN KEY (DrID) REFERENCES DOCTOR_ema,
+ 16  	     FOREIGN KEY (ApptStatusCode) REFERENCES APPTSTATUS_ema,
+ 17  	     FOREIGN KEY (PmtStatusCode) REFERENCES PMTSTATUS_ema
+ 18  	     );
+
+Table created.
+
+SQL> 
+SQL> 	     CREATE TABLE APPTDETAIL_ema (
+  2  	     ApptID NUMBER(3),
+  3  	     ApptReasonCode  CHAR(3) ,
+  4  	     BlockCode VARCHAR(2),
+  5  	     PRIMARY KEY(ApptID,ApptReasonCode),
+  6  	     FOREIGN KEY(ApptID) REFERENCES APPOINTMENT_ema,
+  7  	     FOREIGN KEY(ApptReasonCode) REFERENCES APPTREASON_ema,
+  8  	     FOREIGN KEY(BlockCode) REFERENCES BLOCK_ema
+  9  	     );
+
+Table created.
+
+SQL> 
+SQL> --part 1B
+SQL> 
+SQL> 	     DESCRIBE APPTDETAIL_ema;
+ Name                                                                 Null?    Type
+ -------------------------------------------------------------------- -------- ----------------------------------------------
+ APPTID                                                               NOT NULL NUMBER(3)
+ APPTREASONCODE                                                       NOT NULL CHAR(3)
+ BLOCKCODE                                                                     VARCHAR2(2)
+
+SQL> 	     DESCRIBE APPOINTMENT_ema;
+ Name                                                                 Null?    Type
+ -------------------------------------------------------------------- -------- ----------------------------------------------
+ APPTID                                                               NOT NULL NUMBER(3)
+ APPTDATE                                                             NOT NULL DATE
+ APPTTIME                                                             NOT NULL CHAR(9)
+ PATIENTID                                                            NOT NULL NUMBER(4)
+ BILLINGTYPE                                                          NOT NULL VARCHAR2(2)
+ INSCOID                                                                       NUMBER(4)
+ DRID                                                                 NOT NULL NUMBER(2)
+ APPTSTATUSCODE                                                       NOT NULL VARCHAR2(20)
+ PMTSTATUSCODE                                                        NOT NULL CHAR(2)
+
+SQL> 	     DESCRIBE BLOCK_ema;
+ Name                                                                 Null?    Type
+ -------------------------------------------------------------------- -------- ----------------------------------------------
+ BLOCKCODE                                                            NOT NULL VARCHAR2(2)
+ BLOCKCODEDESC                                                        NOT NULL VARCHAR2(7)
+ BLOCKCODEMINUTES                                                              NUMBER(2)
+
+SQL> 	     DESCRIBE APPTREASON_ema;
+ Name                                                                 Null?    Type
+ -------------------------------------------------------------------- -------- ----------------------------------------------
+ APPTREASONCODE                                                       NOT NULL CHAR(3)
+ APPTREASONDESC                                                       NOT NULL VARCHAR2(22)
+
+SQL> 	     DESCRIBE APPTSTATUS_ema;
+ Name                                                                 Null?    Type
+ -------------------------------------------------------------------- -------- ----------------------------------------------
+ APPTSTATUSCODE                                                       NOT NULL VARCHAR2(2)
+ APPTSTATUSDESC                                                       NOT NULL VARCHAR2(13)
+
+SQL> 	     DESCRIBE PMTSTATUS_ema;
+ Name                                                                 Null?    Type
+ -------------------------------------------------------------------- -------- ----------------------------------------------
+ PMTSTATUSCODE                                                        NOT NULL CHAR(2)
+ PMTSTATUSDESC                                                        NOT NULL VARCHAR2(13)
+
+SQL> 	     DESCRIBE DOCTOR_ema;
+ Name                                                                 Null?    Type
+ -------------------------------------------------------------------- -------- ----------------------------------------------
+ DRID                                                                 NOT NULL NUMBER(2)
+ DRFNAME                                                              NOT NULL VARCHAR2(20)
+ DRLNAME                                                              NOT NULL VARCHAR2(20)
+
+SQL> 	     DESCRIBE INSURANCECO_ema;
+ Name                                                                 Null?    Type
+ -------------------------------------------------------------------- -------- ----------------------------------------------
+ INSCOID                                                              NOT NULL NUMBER(4)
+ INSCONAME                                                                     VARCHAR2(20)
+
+SQL> 	     DESCRIBE BILLINGTYPE_ema;
+ Name                                                                 Null?    Type
+ -------------------------------------------------------------------- -------- ----------------------------------------------
+ BILLINGTYPE                                                          NOT NULL VARCHAR2(2)
+ BILLINGTYPEDESC                                                      NOT NULL VARCHAR2(20)
+
+SQL> 	     DESCRIBE PATIENT_ema;
+ Name                                                                 Null?    Type
+ -------------------------------------------------------------------- -------- ----------------------------------------------
+ PATIENTID                                                            NOT NULL NUMBER(4)
+ PATIENTFNAME                                                         NOT NULL VARCHAR2(15)
+ PATIENTLNAME                                                         NOT NULL VARCHAR2(15)
+ PATIENTPHONE                                                                  CHAR(13)
+
+SQL> 
+SQL> --Part 2A
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES (101,'Wesley','Tanner','8175551193');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES (100,'Brenda','Rhodes','2145559191');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES (15,'Jeff','Miner','4695552301');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES (77,'Kim','Jackson','8175554911');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES (119,'Mary','Vaughn','8175552134');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES (97,'Chris','Mancha','4695553440');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES (28,'Renee','Walker','2145559285');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES (105,'Johnny','Redmond','2145551084');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES (84,'James','Clayton','2145559285');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES (23,'Shelby','Davis','8175551198');
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> --Billing type
+SQL> INSERT INTO BILLINGTYPE_ema
+  2  VALUES ('I','Insurance');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO BILLINGTYPE_ema
+  2  VALUES ('SP','Self-Pay');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO BILLINGTYPE_ema
+  2  VALUES ('WC','workers Comp');
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> --INSURANCE CO
+SQL> INSERT INTO INSURANCECO_ema
+  2  VALUES(323, 'Humana');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO INSURANCECO_ema
+  2  VALUES(129, 'Blue Cross');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO INSURANCECO_ema
+  2  VALUES(210, 'State Farm');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO INSURANCECO_ema
+  2  VALUES(135, 'TriCare');
+
+1 row created.
+
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> --Doctor
+SQL> 
+SQL> INSERT INTO DOCTOR_ema
+  2  VALUES(2,'Micheal','Smith');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO DOCTOR_ema
+  2  VALUES(5,'Janice','May');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO DOCTOR_ema
+  2  VALUES(1,'Kay','Jones');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO DOCTOR_ema
+  2  VALUES(3,'Ray','Schultz');
+
+1 row created.
+
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> --PmtStauts
+SQL> 
+SQL> INSERT INTO PMTSTATUS_ema
+  2  VALUES('PF','Paid in full');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PMTSTATUS_ema
+  2  VALUES('PP','Partial Pmt');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO PMTSTATUS_ema
+  2  VALUES('NP','Not Paid');
+
+1 row created.
+
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO APPTSTATUS_ema
+  2  VALUES('CM','Complete');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTSTATUS_ema
+  2  VALUES('CN','Confirmed');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTSTATUS_ema
+  2  VALUES('NC','Not Confirmed');
+
+1 row created.
+
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO APPTREASON_ema
+  2  VALUES('NP','New patient');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTREASON_ema
+  2  VALUES('GBP','General Back Pain');
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> INSERT INTO APPTREASON_ema
+  2  VALUES('XR','X-Ray');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTREASON_ema
+  2  VALUES('PSF','Post-Surgery Follow Up');
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> INSERT INTO APPTREASON_ema
+  2  VALUES('SR','suture Removal');
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> INSERT INTO APPTREASON_ema
+  2  VALUES('PT','Physical Therapy');
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> INSERT INTO APPTREASON_ema
+  2  VALUES('AI','Auto Injury');
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> INSERT INTO APPTREASON_ema
+  2  VALUES('HP','Hip Pain');
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> --Block
+SQL> 
+SQL> INSERT INTO BLOCK_ema
+  2  VALUES('L1','Level 1',10);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO BLOCK_ema
+  2  VALUES('L2','Level 2',15);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO BLOCK_ema
+  2  VALUES('L3','Level 3',20);
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO BLOCK_ema
+  2  VALUES('L4','Level 4',30);
+
+1 row created.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> --Appointment
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(101,'25-sep-21','9:00 AM',101,'I',323,2,'CM','PF');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(102,'25-sep-21','9:00 AM',100,'I',129,5,'CM','PP');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(103,'25-sep-21','10:00 AM',15,'SP','',2,'CM','PF');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(104,'25-sep-21','10:30 AM',77,'WC',210,1,'CM','PF');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(105,'25-sep-21','10:30 AM',119,'I',129,2,'CM','PP');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(106,'25-sep-21','10:30 AM',97,'SP','',3,'CM','NP');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(107,'25-sep-21','11:30 AM',28,'I',129,3,'CN','PP');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(108,'25-sep-21','11:30 AM',105,'I',323,2,'CN','NP');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(109,'25-sep-21','2:00 PM',84,'I',135,5,'CN','NP');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(110,'26-sep-21','8:30 AM',84,'I',135,3,'NC','NP');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPOINTMENT_ema
+  2  VALUES(111,'26-sep-21','8:00 AM',23,'WC',323,1,'CN','NP');
+
+1 row created.
+
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> --Appointment Details
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(101,'NP','L1');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(101,'GBP','L2');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(101,'XR','L2');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(102,'PSF','L1');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(102,'SR','L1');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(103,'PSF','L1');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(103,'SR','L2');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(104,'PT','L3');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(105,'NP','L1');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(105,'AI','L2');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(106,'PT','L4');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(107,'PT','L3');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(108,'GBP','L2');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(109,'PSF','L1');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(109,'SR','L2');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(110,'PT','L4');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(111,'NP','L1');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(111,'HP','L2');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTDETAIL_ema
+  2  VALUES(111,'XR','L2');
+
+1 row created.
+
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> --Part 2B
+SQL> 	     SELECT * FROM APPTDETAIL_ema;
+
+    APPTID APP BL                                                                                                            
+---------- --- --                                                                                                            
+       101 NP  L1                                                                                                            
+       101 GBP L2                                                                                                            
+       101 XR  L2                                                                                                            
+       102 PSF L1                                                                                                            
+       102 SR  L1                                                                                                            
+       103 PSF L1                                                                                                            
+       103 SR  L2                                                                                                            
+       104 PT  L3                                                                                                            
+       105 NP  L1                                                                                                            
+       105 AI  L2                                                                                                            
+       106 PT  L4                                                                                                            
+
+    APPTID APP BL                                                                                                            
+---------- --- --                                                                                                            
+       107 PT  L3                                                                                                            
+       108 GBP L2                                                                                                            
+       109 PSF L1                                                                                                            
+       109 SR  L2                                                                                                            
+       110 PT  L4                                                                                                            
+       111 NP  L1                                                                                                            
+       111 HP  L2                                                                                                            
+       111 XR  L2                                                                                                            
+
+19 rows selected.
+
+SQL> 	     SELECT * FROM APPOINTMENT_ema;
+
+    APPTID APPTDATE             APPTTIME   PATIENTID BILLINGTYPE        INSCOID       DRID APPTSTATUSCODE       PM           
+---------- -------------------- --------- ---------- --------------- ---------- ---------- -------------------- --           
+       101 25-SEP-0021 00:00:00 9:00 AM          101 I                      323          2 CM                   PF           
+       102 25-SEP-0021 00:00:00 9:00 AM          100 I                      129          5 CM                   PP           
+       103 25-SEP-0021 00:00:00 10:00 AM          15 SP                                  2 CM                   PF           
+       104 25-SEP-0021 00:00:00 10:30 AM          77 WC                     210          1 CM                   PF           
+       105 25-SEP-0021 00:00:00 10:30 AM         119 I                      129          2 CM                   PP           
+       106 25-SEP-0021 00:00:00 10:30 AM          97 SP                                  3 CM                   NP           
+       107 25-SEP-0021 00:00:00 11:30 AM          28 I                      129          3 CN                   PP           
+       108 25-SEP-0021 00:00:00 11:30 AM         105 I                      323          2 CN                   NP           
+       109 25-SEP-0021 00:00:00 2:00 PM           84 I                      135          5 CN                   NP           
+       110 26-SEP-0021 00:00:00 8:30 AM           84 I                      135          3 NC                   NP           
+       111 26-SEP-0021 00:00:00 8:00 AM           23 WC                     323          1 CN                   NP           
+
+11 rows selected.
+
+SQL> 	     SELECT * FROM BLOCK_ema;
+
+BL BLOCKCO BLOCKCODEMINUTES                                                                                                  
+-- ------- ----------------                                                                                                  
+L1 Level 1               10                                                                                                  
+L2 Level 2               15                                                                                                  
+L3 Level 3               20                                                                                                  
+L4 Level 4               30                                                                                                  
+
+SQL> 	     SELECT * FROM APPTREASON_ema;
+
+APP APPTREASONDESC                                                                                                           
+--- ----------------------                                                                                                   
+NP  New patient                                                                                                              
+GBP General Back Pain                                                                                                        
+XR  X-Ray                                                                                                                    
+PSF Post-Surgery Follow Up                                                                                                   
+SR  suture Removal                                                                                                           
+PT  Physical Therapy                                                                                                         
+AI  Auto Injury                                                                                                              
+HP  Hip Pain                                                                                                                 
+
+8 rows selected.
+
+SQL> 	     SELECT * FROM APPTSTATUS_ema;
+
+AP APPTSTATUSDES                                                                                                             
+-- -------------                                                                                                             
+CM Complete                                                                                                                  
+CN Confirmed                                                                                                                 
+NC Not Confirmed                                                                                                             
+
+SQL> 	     SELECT * FROM PMTSTATUS_ema;
+
+PM PMTSTATUSDESC                                                                                                             
+-- -------------                                                                                                             
+PF Paid in full                                                                                                              
+PP Partial Pmt                                                                                                               
+NP Not Paid                                                                                                                  
+
+SQL> 	     SELECT * FROM DOCTOR_ema;
+
+      DRID DRFNAME              DRLNAME                                                                                      
+---------- -------------------- --------------------                                                                         
+         2 Micheal              Smith                                                                                        
+         5 Janice               May                                                                                          
+         1 Kay                  Jones                                                                                        
+         3 Ray                  Schultz                                                                                      
+
+SQL> 	     SELECT * FROM INSURANCECO_ema;
+
+   INSCOID INSCONAME                                                                                                         
+---------- --------------------                                                                                              
+       323 Humana                                                                                                            
+       129 Blue Cross                                                                                                        
+       210 State Farm                                                                                                        
+       135 TriCare                                                                                                           
+
+SQL> 	     SELECT * FROM BILLINGTYPE_ema;
+
+BILLINGTYPE     BILLINGTYPEDESC                                                                                              
+--------------- --------------------                                                                                         
+I               Insurance                                                                                                    
+SP              Self-Pay                                                                                                     
+WC              workers Comp                                                                                                 
+
+SQL> 	     SELECT * FROM PATIENT_ema;
+
+ PATIENTID PATIENTFNAME    PATIENTLNAME    PATIENTPHONE                                                                      
+---------- --------------- --------------- -------------                                                                     
+       101 Wesley          Tanner          8175551193                                                                        
+       100 Brenda          Rhodes          2145559191                                                                        
+        15 Jeff            Miner           4695552301                                                                        
+        77 Kim             Jackson         8175554911                                                                        
+       119 Mary            Vaughn          8175552134                                                                        
+        97 Chris           Mancha          4695553440                                                                        
+        28 Renee           Walker          2145559285                                                                        
+       105 Johnny          Redmond         2145551084                                                                        
+        84 James           Clayton         2145559285                                                                        
+        23 Shelby          Davis           8175551198                                                                        
+
+10 rows selected.
+
+SQL> 
+SQL> --Part 3
+SQL> UPDATE PATIENT_ema
+  2  	     set PatientPhone = '2145551234'
+  3  WHERE PatientID = 101;
+
+1 row updated.
+
+SQL> 
+SQL> INSERT INTO PATIENT_ema
+  2  VALUES(120,'Amanda','Green','');
+
+1 row created.
+
+SQL> 
+SQL> INSERT INTO APPTSTATUS_ema
+  2  VALUES('X','Cancelled');
+
+1 row created.
+
+SQL> 
+SQL> UPDATE APPOINTMENT_ema
+  2  	     set ApptTime= '11:30'
+  3  WHERE ApptID = 110;
+
+1 row updated.
+
+SQL> 
+SQL> UPDATE APPOINTMENT_ema
+  2  	     set ApptStatusCode = 'X'
+  3  WHERE ApptID = 108;
+
+1 row updated.
+
+SQL> 
+SQL> /*INSERT INTO APPTDETAIL_ema
+SQL> VALUES(108,'NP','L1');
+SQL> COMMIT;*/
+SQL> 
+SQL> 
+SQL> --Part 4
+SQL> 	     SELECT * FROM APPTDETAIL_ema ORDER BY ApptID,ReasonCode;
+	SELECT * FROM APPTDETAIL_ema ORDER BY ApptID,ReasonCode
+	                                             *
+ERROR at line 1:
+ORA-00904: "REASONCODE": invalid identifier 
+
+
+SQL> 	     SELECT * FROM APPOINTMENT_ema ORDER BY ApptID;
+
+    APPTID APPTDATE             APPTTIME   PATIENTID BILLINGTYPE        INSCOID       DRID APPTSTATUSCODE       PM           
+---------- -------------------- --------- ---------- --------------- ---------- ---------- -------------------- --           
+       101 25-SEP-0021 00:00:00 9:00 AM          101 I                      323          2 CM                   PF           
+       102 25-SEP-0021 00:00:00 9:00 AM          100 I                      129          5 CM                   PP           
+       103 25-SEP-0021 00:00:00 10:00 AM          15 SP                                  2 CM                   PF           
+       104 25-SEP-0021 00:00:00 10:30 AM          77 WC                     210          1 CM                   PF           
+       105 25-SEP-0021 00:00:00 10:30 AM         119 I                      129          2 CM                   PP           
+       106 25-SEP-0021 00:00:00 10:30 AM          97 SP                                  3 CM                   NP           
+       107 25-SEP-0021 00:00:00 11:30 AM          28 I                      129          3 CN                   PP           
+       108 25-SEP-0021 00:00:00 11:30 AM         105 I                      323          2 X                    NP           
+       109 25-SEP-0021 00:00:00 2:00 PM           84 I                      135          5 CN                   NP           
+       110 26-SEP-0021 00:00:00 11:30             84 I                      135          3 NC                   NP           
+       111 26-SEP-0021 00:00:00 8:00 AM           23 WC                     323          1 CN                   NP           
+
+11 rows selected.
+
+SQL> 	     SELECT * FROM BLOCK_ema ORDER BY BlockCode;
+
+BL BLOCKCO BLOCKCODEMINUTES                                                                                                  
+-- ------- ----------------                                                                                                  
+L1 Level 1               10                                                                                                  
+L2 Level 2               15                                                                                                  
+L3 Level 3               20                                                                                                  
+L4 Level 4               30                                                                                                  
+
+SQL> 	     SELECT * FROM APPTREASON_ema ORDER BY ApptReasonCode;
+
+APP APPTREASONDESC                                                                                                           
+--- ----------------------                                                                                                   
+AI  Auto Injury                                                                                                              
+GBP General Back Pain                                                                                                        
+HP  Hip Pain                                                                                                                 
+NP  New patient                                                                                                              
+PSF Post-Surgery Follow Up                                                                                                   
+PT  Physical Therapy                                                                                                         
+SR  suture Removal                                                                                                           
+XR  X-Ray                                                                                                                    
+
+8 rows selected.
+
+SQL> 	     SELECT * FROM APPTSTATUS_ema ORDER BY ApptStatusCode;
+
+AP APPTSTATUSDES                                                                                                             
+-- -------------                                                                                                             
+CM Complete                                                                                                                  
+CN Confirmed                                                                                                                 
+NC Not Confirmed                                                                                                             
+X  Cancelled                                                                                                                 
+
+SQL> 	     SELECT * FROM PMTSTATUS_ema ORDER BY PmtStatusCode;
+
+PM PMTSTATUSDESC                                                                                                             
+-- -------------                                                                                                             
+NP Not Paid                                                                                                                  
+PF Paid in full                                                                                                              
+PP Partial Pmt                                                                                                               
+
+SQL> 	     SELECT * FROM DOCTOR_ema ORDER BY DrID;
+
+      DRID DRFNAME              DRLNAME                                                                                      
+---------- -------------------- --------------------                                                                         
+         1 Kay                  Jones                                                                                        
+         2 Micheal              Smith                                                                                        
+         3 Ray                  Schultz                                                                                      
+         5 Janice               May                                                                                          
+
+SQL> 	     SELECT * FROM INSURANCECO_ema ORDER BY InsCoID ;
+
+   INSCOID INSCONAME                                                                                                         
+---------- --------------------                                                                                              
+       129 Blue Cross                                                                                                        
+       135 TriCare                                                                                                           
+       210 State Farm                                                                                                        
+       323 Humana                                                                                                            
+
+SQL> 	     SELECT * FROM BILLINGTYPE_ema ORDER BY BillingType;
+
+BILLINGTYPE     BILLINGTYPEDESC                                                                                              
+--------------- --------------------                                                                                         
+I               Insurance                                                                                                    
+SP              Self-Pay                                                                                                     
+WC              workers Comp                                                                                                 
+
+SQL> 	     SELECT * FROM PATIENT_ema ORDER BY PatientID;
+
+ PATIENTID PATIENTFNAME    PATIENTLNAME    PATIENTPHONE                                                                      
+---------- --------------- --------------- -------------                                                                     
+        15 Jeff            Miner           4695552301                                                                        
+        23 Shelby          Davis           8175551198                                                                        
+        28 Renee           Walker          2145559285                                                                        
+        77 Kim             Jackson         8175554911                                                                        
+        84 James           Clayton         2145559285                                                                        
+        97 Chris           Mancha          4695553440                                                                        
+       100 Brenda          Rhodes          2145559191                                                                        
+       101 Wesley          Tanner          2145551234                                                                        
+       105 Johnny          Redmond         2145551084                                                                        
+       119 Mary            Vaughn          8175552134                                                                        
+       120 Amanda          Green                                                                                             
+
+11 rows selected.
+
+SQL> DESCRIBE
+Usage: DESCRIBE [schema.]object[@db_link]
+SQL> 
+SQL> set echo off
